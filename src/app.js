@@ -7,7 +7,8 @@ const app = express();
 
 app.use(cors());
 
-app.use(express.json())
+//dizemos para o express que ele pode aceitar json
+app.use(express.json());
 
 app.use(routes);
 

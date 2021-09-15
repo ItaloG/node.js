@@ -1,3 +1,4 @@
+const User = require("../models/User");
 
 
 module.exports = {
@@ -27,17 +28,38 @@ module.exports = {
 
         res.send(posts);
     },
+
     find(req, res) {
 
     },
-    store(req, res) {
+
+    async store(req, res) {
+
+        const { title, description, gist } = req.body;
+
+        const { userId } = req;
+
+        let user = await User.findByPk(userId);
+
+        if (!user)
+            return res.status(404).send({ error: "Aluno não encontrado" });
+
+        let post = await user.createPost({
+            title,
+            description,
+            gist,
+            image: req.file.filename
+        });
+
+        res.status(201).send(post);
 
     },
+
     update(req, res) {
 
     },
+
     delete(req, res) {
 
     }
 }
-

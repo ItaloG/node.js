@@ -3,12 +3,11 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const auth = require("../config/auth");
 
-
 module.exports = {
     async store(req, res) {
         const { name, email, password } = req.body;
 
-        //vireificar se o usario já existe
+        //verificar se o usuário já existe
         let user = await User.findOne({
             where: {
                 email: email
@@ -17,27 +16,25 @@ module.exports = {
 
         if (user) {
             return res.status(400)
-                .send({ error: "Esta e-mail já esta sendo utilizado" })
+                .send({ error: "Este e-mail já está sendo utilizado" })
         }
 
         //gerar o hash da senha
-        const passwordHashed = bcrypt.hashSync(password)
+        const passwordHashed = bcrypt.hashSync(password);
 
-        //iserir o usuário no banco
+        //inserir o usuário no banco
         user = await User.create({
             name: name,
             email: email,
             password: passwordHashed
-        })
+        });
 
         //gerar um token
-        const token = jwt.sign(
-            { userId: user.id },
-            auth.secret, {
+        const token = jwt.sign({ userId: user.id }, auth.secret, {
             expiresIn: "1h"
-        })
+        });
 
-        // retornar o usúario
+        //retornar o usuário
         res.send({
             user: {
                 id: user.id,
@@ -46,7 +43,5 @@ module.exports = {
             },
             token
         });
-
-     
     }
 }
